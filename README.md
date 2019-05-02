@@ -15,9 +15,14 @@ front-end:
 prerequisite: install node and npm
 
 clone this repo
+
 go to root folder of this project, install dependencies: $ npm install
+
 run the application: $ npm start or , $ node server.js
+
 In the browser, visit http://localhost:8080/ to use the application
+
+The files in datasource/ contains the doctors data.
 
 
 ## client-side version
