@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+    <script>
+function showError(resp) {
+    resp.json().then(function (result) {
+        console.log('Error: ' + result.message);
+    });
+}
+
+$(function () {
+    var vm = new Vue({
+        el: '#vm',
+        http: {
+            timeout: 5000
+        },
+        data: {
+            title: 'Doctors List',
+            doctors: [],
+            specialties: [],
+            areas: [],
+            scores: [],
+            displayedDoctors: [],
+            selectedDoctorId: "",
+            currentDescription: "",
+            similarDoctors: [],
+            currentSimilarSelectedId: "",
+            specialty: "any",
+            area:"any",
+            score:"any",
+        },
+        created: function () {
+            this.init();
+        },
+        methods: {
+            init: function () {
+                var that = this;
+                that.selectedDoctorId = "",
+                that.currentDescription = "",
+                that.similarDoctors = [];
+                that.currentSimilarSelectedId = "";
+                that.specialty = "any";
+                that.area = "any";
+                that.score = "any";
+                $("#specialty").val("any");
+                $("#area").val("any");
+                $("#score").val("any");
+                //GET all the doctors and categories information from server
+                that.$resource('/api/doctors').get().then(function (resp) {
+                    resp.json().then(function (result) {
+                        that.doctors = result.doctors;
+                        for (var i = 0; i < that.doctors.length; i++) {
+                            that.doctors[i].isActive = false;
+                        }
+                        that.displayedDoctors = that.doctors;
+                        that.specialties = result.specialties;
+                        that.areas = result.areas;
+                        var maxScore = parseInt(result.maxScore);
+                        console.log(maxScore);
+                        for (var i = 1; i <= maxScore; i++) {
+                            var score = i.toString(10);
+                            that.scores.push({
+                                value:score,
+                                text:score
+                            });
+                        }
+                        that.specialties.unshift({value:"any",text:"any"});
+                        that.areas.unshift({value:"any",text:"any"});
+                        that.scores.unshift({value:"any",text:"any"});
+                    });
+                }, function (resp) {
+                    showError(resp);
+                });
+            },
+            //when filter conditions change, displayed doctors should change accordingly
+            updateDisplayedDoctors: function() {
+                this.displayedDoctors = [];
+                var selectedInDisplay = false;
+                for (var i = 0; i < this.doctors.length; i++) {
+                    if (this.specialty !== "any" && this.doctors[i].specialty !== this.specialty) {
+                        continue;
+                    }
+                    if (this.area !== "any" && this.doctors[i].area !== this.area) {
+                        continue;
+                    }
+                    if (this.score !== "any" && this.doctors[i].score !== this.score) {
+                        continue;
+                    }
+                    this.displayedDoctors.push(this.doctors[i]);
+                    if (this.selectedDoctorId == this.doctors[i].id) {
+                        selectedInDisplay = true;
+                    }
+                }
+                if (!selectedInDisplay) {
+                    this.selectedDoctorId = "";
+                    this.currentDescription = "";
+                    this.similarDoctors = [];
+                    this.currentSimilarSelectedId = "";
+                }
+            },
+            //change specialty
+            specialtyChanged: function() {
+                this.specialty = $("#specialty").val();
+                console.log(this.specialty);
+                this.updateDisplayedDoctors();
+            },
+            //change area
+            areaChanged: function() {
+                this.area = $("#area").val();
+                console.log(this.area);
+                this.updateDisplayedDoctors();
+            },
+            //change score
+            scoreChanged: function() {
+                this.score = $("#score").val();
+                console.log(this.score);
+                this.updateDisplayedDoctors();
+            },
+            //When clicking on a doctor, GET his/her details from server
+            //and find similar doctors
+            click: function (doctor) {
+                if (this.selectedDoctorId == doctor.id) {
+                    return;
+                }
+                this.currentSimilarSelectedId = "";
+                this.findSimilarDoctors(doctor);
+                this.selectedDoctorId = doctor.id;
+                this.requestDescription(this.selectedDoctorId);
+            },
+            //When clicking on a similar doctor, GET his/her details from server
+            clickSimilarDoctor: function (doctor) {
+                if (doctor.id == this.currentSimilarSelectedId) {
+                    return;
+                }
+                this.currentSimilarSelectedId = doctor.id;
+                this.requestDescription(this.currentSimilarSelectedId);
+            },
+            //request doctor's information from server
+            requestDescription:function (doctorId) {
+                var that = this;
+                that.$resource('/api/description/'+doctorId).get().then(function (resp) {
+                    resp.json().then(function (result) {
+                        that.currentDescription = result.description;
+                    });
+                }, function (resp) {
+                    showError(resp);
+                });
+            },
+            //Two doctors are similar is defined as they share the same specialty 
+            //and the difference of their scores is never more than 1
+            findSimilarDoctors: function (doctor) {
+                var that = this;
+                that.similarDoctors = [];
+                for (var i = 0; i < that.doctors.length; i++) {
+                    if (that.doctors[i].id !== doctor.id
+                        && that.doctors[i].specialty == doctor.specialty
+                        && Math.abs(parseInt(that.doctors[i].score) - parseInt(doctor.score)) <= 1 ) {
+                        that.similarDoctors.push(that.doctors[i]);
+                    }
+                }
+            }
+        }
+    });
+    window.vm = vm;
+});
+
+</script>
+</head>
+
+<body>
+    <div id="important" style="color:#cdbfe3; background-color:#6f5499; padding:30px 0; margin:-20px 0 20px 0;">
+        <div class="container">
+            <h1 style="color:#fff; font-size:60px">Doctor List</h1>
+            <p style="font-size:24px; line-height:48px">Find the best doctors here!</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="row">
+                <div id="vm">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-th-list"></span> Doctors Filters</h3>
+                        <label >Specialty</label>
+                        <select id="specialty" v-on:change="specialtyChanged()">
+                            <option v-for="option in specialties" v-bind:value="option.value" >
+                                {{ option.text }}
+                            </option>
+                        </select>
+                        <label>Area</label>
+                        <select id="area" v-on:change="areaChanged()">
+                            <option v-for="option in areas" v-bind:value="option.value">
+                                {{ option.text }}
+                            </option>
+                        </select>
+                        <label>Score</label>
+                        <select id="score" v-on:change="scoreChanged()">
+                            <option v-for="option in scores" v-bind:value="option.value">
+                                {{ option.text }}
+                            </option>
+                        </select>
+                      <button class="btn btn-primary" v-on:click= "init()"> refresh</button>
+                    </div>
+                    <div id="doctorsBox" class="panel-body">
+                      <h3>{{ title }}</h3>
+                      <div >
+                            <ol class="list-group"> 
+                                <li v-for="t in displayedDoctors" class="list-group-item" v-on:click="click(t)" v-bind:class="{ active: t.id == selectedDoctorId }">
+                                    {{t.name}}
+                                </li>
+                            </ol>
+                      </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon glyphicon-user"></span> Doctor detail</h3>
+                    </div>
+                    <div id="descriptionBox" class="panel-body">
+                        {{currentDescription}}
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon glyphicon-eye-open"></span> Similar Doctors</h3>
+                    </div>
+                    <div id="similarDoctorsBox" class="panel-body">
+                        <ol class="list-group"> 
+                                <li v-for="t in similarDoctors" class="list-group-item" v-on:click="clickSimilarDoctor(t)" v-bind:class="{ active: t.id == currentSimilarSelectedId }">
+                                    {{t.name}}
+                                </li>
+                                
+                            </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <footer style="background-color:#ddd; padding: 20px 0;">
+        <div class="container">
+            <p>This web page is created by <a target="_blank" href="https://github.com/danielyang0/">@Zun Yang</a>.</p>
+            <p><a target="_blank" href="https://github.com/danielyang0/doctorsList">GitHub repo</a>.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

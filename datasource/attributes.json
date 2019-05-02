@@ -1,0 +1,61 @@
+{
+    "specialties":
+    [
+        {
+            "value": "Allergists",
+            "text": "Allergists"
+        },
+        {
+            "value": "Anesthesiologists",
+            "text": "Anesthesiologists"
+        },
+        {
+            "value": "Cardiologists",
+            "text": "Cardiologists"
+        },
+        {
+            "value": "Dermatologists",
+            "text": "Dermatologists"
+        },
+        {
+            "value": "Endocrinologists",
+            "text": "Endocrinologists"
+        },
+        {
+            "value": "Family Physicians",
+            "text": "Family Physicians"
+        }
+    ],
+    "areas":
+    [
+        {
+            "value": "New York",
+            "text": "New York"
+        },
+        {
+            "value": "LA",
+            "text": "LA"
+        },
+        {
+            "value": "Chicago",
+            "text": "Chicago"
+        },
+        {
+            "value": "San Francisco",
+            "text": "San Francisco"
+        },
+        {
+            "value": "Seatle",
+            "text": "Seatle"
+        },
+        {
+            "value": "Boston",
+            "text": "Boston"
+        },
+        {
+            "value": "Detroit",
+            "text": "Detroit"
+        }
+    ],
+    "maxScore":5
+}

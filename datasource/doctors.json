@@ -1,0 +1,82 @@
+[
+    {
+        "id": "1",
+        "name": "John Smith",
+        "description": "This is John Smith",
+        "specialty":"Allergists",
+        "area": "New York",
+        "score": "5"
+    },
+    {
+        "id": "2",
+        "name": "James Williams",
+        "description": "This is James Williams",
+        "specialty":"Anesthesiologists",
+        "area": "Chicago",
+        "score": "4"
+    },
+    {
+        "id": "3",
+        "name": "Nathan Davis",
+        "description": "This is Nathan Davis",
+        "specialty":"Cardiologists",
+        "area": "LA",
+        "score": "5"
+    },
+    {
+        "id": "4",
+        "name": "Alison Miller",
+        "description": "This is Alison Miller",
+        "specialty":"Dermatologists",
+        "area": "San Francisco",
+        "score": "3"
+    },
+    {
+        "id": "5",
+        "name": "Susan Taylor",
+        "description": "This is Susan Taylor",
+        "specialty":"Endocrinologists",
+        "area": "Seatle",
+        "score": "4"
+    },
+    {
+        "id": "6",
+        "name": "Linda Wilson",
+        "description": "This is Linda Wilson",
+        "specialty":"Family Physicians",
+        "area": "Boston",
+        "score": "2"
+    },
+    {
+        "id": "7",
+        "name": "Lisa Perry",   
+        "description": "This is Lisa Perry",
+        "specialty":"Family Physicians",
+        "area": "Detroit",
+        "score": "3"
+    },
+    {
+        "id": "8",
+        "name": "Alex Cooper",   
+        "description": "This is Alex Cooper",
+        "specialty":"Dermatologists",
+        "area": "San Francisco",
+        "score": "2"
+    },
+    {
+        "id": "9",
+        "name": "Joseph Hill",   
+        "description": "This is Joseph Hill",
+        "specialty":"Family Physicians",
+        "area": "LA",
+        "score": "3"
+    },
+    {
+        "id": "10",
+        "name": "Paul Scott",   
+        "description": "This is Paul Scott",
+        "specialty":"Allergists",
+        "area": "Seatle",
+        "score": "5"
+    }
+]
