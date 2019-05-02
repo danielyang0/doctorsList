@@ -2,12 +2,12 @@
 A simple web application for displaying doctors List
 
 ## technology
-###Back-end: 
+Back-end: 
     node.js, koa
-###Data storage: 
+Data storage: 
     using text file to store the doctors' related information for simplicity
 
-###front-end: 
+front-end: 
     Vue.js, Bootstrap
 
 
