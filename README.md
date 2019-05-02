@@ -11,6 +11,6 @@ front-end:
     Vue.js, Bootstrap
 
 
-##client-side version
+## client-side version
 a client-side version of this application is deployed on AWS s3:
 http://similardoctorlist.com.s3-website-us-west-1.amazonaws.com/
